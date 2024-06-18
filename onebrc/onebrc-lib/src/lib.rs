@@ -22,8 +22,8 @@ const NUMBER_LOOKUP: [NumberTypeUsed; 256] = [
 ];
 
 
-pub fn init_mmap() {
-    let file = File::open(FILE_NAME).unwrap();
+pub fn init_mmap(file_name: Option<&str>) {
+    let file = File::open(file_name.unwrap_or(FILE_NAME)).unwrap();
     MMAP.get_or_init(|| unsafe { Mmap::map(&file).unwrap() });
 }
 
