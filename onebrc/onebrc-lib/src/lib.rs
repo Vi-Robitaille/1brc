@@ -5,7 +5,7 @@ use std::fs::File;
 use std::ops::AddAssign;
 use std::sync::OnceLock;
 
-const FILE_NAME: &str = "/home/vi/git/1brc/measurements.txt";
+const FILE_NAME: &str = "../measurements.txt";
 pub static MMAP: OnceLock<Mmap> = OnceLock::new();
 type NumberTypeUsed = i32;
 
@@ -268,7 +268,7 @@ pub mod statemachine {
                 }).join().unwrap()
         });
 
-        // println!("{:?}", result);
+        println!("{:?}", _result);
     }
 
     // #[inline]
