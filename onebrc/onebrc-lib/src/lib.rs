@@ -254,24 +254,25 @@ pub mod statemachine {
         }
 
         drop(tx);
-        let _result = thread::scope(|scope| {
-            let mut hm: HashMap<_, crate::WeatherInfo> = HashMap::with_capacity(10000);
-            scope
-                .spawn(move || {
-                    let memmap_handle = MMAP.get().unwrap();
-                    while let Ok(vec_of_data) = rx.recv() {
-                        for (name_range, data_range) in vec_of_data {
-                            let name = StringUnion { bytes: &memmap_handle[name_range] };
-                            let value = WeatherInfo::new(&memmap_handle[data_range]);
-                            *hm.entry(unsafe { name.string }).or_default() += value;
-                        }
-                    }
-                    hm
-                }).join().unwrap()
-        });
-        if print {
-            println!("{:?}", _result);
-        }
+        // let _result = thread::scope(|scope| {
+        //     let mut hm: HashMap<_, crate::WeatherInfo> = HashMap::with_capacity(10000);
+        //     scope
+        //         .spawn(move || {
+        //             let memmap_handle = MMAP.get().unwrap();
+        //             while let Ok(vec_of_data) = rx.recv() {
+        //                 for (name_range, data_range) in vec_of_data {
+        //                     let name = StringUnion { bytes: &memmap_handle[name_range] };
+        //                     let value = WeatherInfo::new(&memmap_handle[data_range]);
+        //                     *hm.entry(unsafe { name.string }).or_default() += value;
+        //                 }
+        //             }
+        //             hm
+        //         }).join().unwrap()
+        // });
+        drop(rx);
+        // if print {
+        //     println!("{:?}", _result);
+        // }
     }
 
     // #[inline]
