@@ -215,6 +215,8 @@ pub mod statemachine {
         // is it faster to have each thread manage its own hashmap then write it all back at the end? or do it as we do now
 
         let available_parallelism: usize = available_parallelism().unwrap().into();
+
+        println!("cores available {:?}", available_parallelism);
         // let available_parallelism: usize = 2;
         // println!("{}", mmap.len());
 
