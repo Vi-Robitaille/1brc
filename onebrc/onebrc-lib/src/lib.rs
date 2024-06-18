@@ -211,7 +211,7 @@ pub mod statemachine {
     use crate::WeatherInfo;
     use crate::MMAP;
 
-    pub fn make_me_the_good_good() {
+    pub fn make_me_the_good_good(print: bool) {
         // is it faster to have each thread manage its own hashmap then write it all back at the end? or do it as we do now
 
         let available_parallelism: usize = available_parallelism().unwrap().into();
@@ -267,8 +267,9 @@ pub mod statemachine {
                     hm
                 }).join().unwrap()
         });
-
-        println!("{:?}", _result);
+        if print {
+            println!("{:?}", _result);
+        }
     }
 
     // #[inline]

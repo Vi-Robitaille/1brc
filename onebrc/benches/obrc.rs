@@ -3,7 +3,7 @@ use onebrc_lib::{init_mmap, statemachine};
 
 fn criterion_benchmark(c: &mut Criterion) {
     init_mmap();
-    c.bench_function("statemachine::make_me_the_good_good", |b| b.iter(|| statemachine::make_me_the_good_good()));
+    c.bench_function("statemachine::make_me_the_good_good", |b| b.iter(|| statemachine::make_me_the_good_good(false)));
 }
 
 criterion_group!(benches, criterion_benchmark);
