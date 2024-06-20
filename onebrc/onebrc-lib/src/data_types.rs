@@ -126,12 +126,14 @@ impl<'a> PartialEq for StringUnion<'a> {
         a.iter().zip(b).all(|(x, y)| x == y)
     }
 }
+
 impl<'a> PartialOrd for StringUnion<'a> {
     #[allow(unused)]
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        todo!()
+        Some(self.cmp(other))
     }
 }
+
 impl<'a> Ord for StringUnion<'a> {
     #[allow(unused)]
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {

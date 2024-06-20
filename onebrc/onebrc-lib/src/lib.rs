@@ -27,7 +27,7 @@ pub fn make_me_the_good_good(print: bool) {
         (1..available_cores)
             .map(|x| {
                 let idx = x * (MMAP.get().unwrap().len() / available_cores);
-                nearby_search(&MMAP.get().unwrap(), (idx - 31)..(idx + 32)).unwrap()
+                nearby_search(MMAP.get().unwrap(), (idx - 31)..(idx + 32)).unwrap()
             })
             .collect::<Vec<usize>>(),
     );
@@ -40,7 +40,36 @@ pub fn make_me_the_good_good(print: bool) {
     // let (tx, rx) = channel();
     let mut thread_handles: Vec<JoinHandle<_>> = Vec::with_capacity(available_cores);
     for r in ranges {
-        let thread_handle = process_chunk(r);
+        let thread_handle = thread::spawn(move || {
+            let mut hm: HashMap<Box<[u8]>, WeatherInfo> = HashMap::new();
+            let mut idx = r.start;
+            while r.contains(&idx) {
+                // finds the ; character which specifies the start of the number and end of the name
+                let name_end =
+                    if let Some(v) = MMAP.get().unwrap()[idx..].iter().position(|&x| x == 0x3B) {
+                        idx + v
+                    } else {
+                        return HashMap::new();
+                    };
+
+                let value_end = if let Some(v) = MMAP.get().unwrap()[name_end..]
+                    .iter()
+                    .position(|&x| x == 0x0A)
+                {
+                    name_end + v
+                } else {
+                    return HashMap::new();
+                };
+
+                // let name = StringUnion::from_utf8(&MMAP.get().unwrap()[idx..name_end]);
+                let name = &MMAP.get().unwrap()[idx..name_end];
+                let boxed = Box::<[u8]>::from(name);
+                let value = WeatherInfo::new(&MMAP.get().unwrap()[(name_end + 1)..value_end]);
+                *hm.entry(boxed).or_default() += value;
+                idx = value_end + 1;
+            }
+            hm
+        });
         thread_handles.push(thread_handle);
     }
 
@@ -77,41 +106,6 @@ pub fn make_me_the_good_good(print: bool) {
         }
         print!("}}");
     }
-}
-
-// #[inline]
-fn process_chunk(range: Range<usize>) -> JoinHandle<HashMap<Box<[u8]>, WeatherInfo>> {
-    let thread_handle = thread::spawn(move || {
-        let mut hm: HashMap<Box<[u8]>, WeatherInfo> = HashMap::new();
-        let mut idx = range.start;
-        while range.contains(&idx) {
-            // finds the ; character which specifies the start of the number and end of the name
-            let name_end =
-                if let Some(v) = MMAP.get().unwrap()[idx..].iter().position(|&x| x == 0x3B) {
-                    idx + v
-                } else {
-                    return HashMap::new();
-                };
-
-            let value_end = if let Some(v) = MMAP.get().unwrap()[name_end..]
-                .iter()
-                .position(|&x| x == 0x0A)
-            {
-                name_end + v
-            } else {
-                return HashMap::new();
-            };
-
-            // let name = StringUnion::from_utf8(&MMAP.get().unwrap()[idx..name_end]);
-            let name = &MMAP.get().unwrap()[idx..name_end];
-            let boxed = Box::<[u8]>::from(name);
-            let value = WeatherInfo::new(&MMAP.get().unwrap()[(name_end + 1)..value_end]);
-            *hm.entry(boxed).or_default() += value;
-            idx = value_end + 1;
-        }
-        hm
-    });
-    thread_handle
 }
 
 // Returns the nearest \n (0x0A) found
