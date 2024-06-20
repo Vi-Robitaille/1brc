@@ -4,10 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bstr = "1.9.1"
+fast-float = "0.2.0"
 gxhash = "3.4.1"
 itertools = "0.13.0"
 memmap2 = "0.9.4"
-smol_str = "0.2.2"
+rayon = "1.10.0"
 
 [profile.release]
 debug = true
