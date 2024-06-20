@@ -1,18 +1,18 @@
 // pub type NumberTypeUsed = f32;
-pub type NumberTypeUsed = i32;
+pub type NumberTypeUsed = f64;
 
 // Used when number type isnt a float
-#[cfg_attr(rustfmt, rustfmt_skip)]
-const NUMBER_LOOKUP: [NumberTypeUsed; 256] = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-];
+// #[cfg_attr(rustfmt, rustfmt_skip)]
+// const NUMBER_LOOKUP: [NumberTypeUsed; 256] = [
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+// ];
 
 #[derive(Debug, Clone)]
 pub struct WeatherInfo {
@@ -24,8 +24,8 @@ pub struct WeatherInfo {
 
 impl WeatherInfo {
     pub fn new(bytes: &[u8]) -> Self {
-        let value: NumberTypeUsed = bytes_to_number_used(bytes);
-        // let value = fast_float::parse::<f32, _>(bytes).unwrap();
+        // let value: NumberTypeUsed = bytes_to_number_used(bytes);
+        let value = fast_float::parse::<NumberTypeUsed, _>(bytes).unwrap();
         WeatherInfo {
             sum: value,
             min: value,
@@ -37,8 +37,8 @@ impl WeatherInfo {
     #[allow(unused)]
     fn update(&mut self, bytes: &[u8]) {
         self.count += 1;
-        let value = bytes_to_number_used(bytes);
-        // let value = fast_float::parse::<f32, _>(bytes).unwrap();
+        // let value = bytes_to_number_used(bytes);
+        let value = fast_float::parse::<NumberTypeUsed, _>(bytes).unwrap();
         self.min = NumberTypeUsed::min(self.min, value);
         self.max = NumberTypeUsed::max(self.max, value);
         self.sum += value;
@@ -48,9 +48,9 @@ impl WeatherInfo {
 impl Default for WeatherInfo {
     fn default() -> Self {
         WeatherInfo {
-            sum: 0,
-            min: 99999999,
-            max: -99999999,
+            sum: 0.0,
+            min: 99999999.0,
+            max: -99999999.0,
             count: 0,
         }
     }
@@ -70,29 +70,29 @@ impl std::fmt::Display for WeatherInfo {
         write!(
             f,
             "{{'min': {:.1}, 'mean': {:.1}, 'max': {:.1} }},",
-            (self.min as f32) / 10_f32,
-            ((self.sum as f32) / 10_f32) / self.count as f32,
-            (self.max as f32) / 10_f32
+            self.min,
+            self.sum / self.count as NumberTypeUsed,
+            self.max
         )
     }
 }
 
-#[inline]
-fn bytes_to_number_used(bytes: &[u8]) -> NumberTypeUsed {
-    let sign: NumberTypeUsed = if bytes[0] == 0x2D { -1 } else { 1 };
-    let number: NumberTypeUsed = bytes
-        .iter()
-        .rev()
-        .filter(|&e| e != &0x2E && e != &0x2D)
-        .enumerate()
-        .map(|(i, &e)| {
-            let pos = NumberTypeUsed::from(10).pow(u32::try_from(i).unwrap());
-            NUMBER_LOOKUP[e as usize] * pos
-        })
-        .reduce(|a, b| a + b)
-        .unwrap();
-    number * sign
-}
+// #[inline]
+// fn bytes_to_number_used(bytes: &[u8]) -> NumberTypeUsed {
+//     let sign: NumberTypeUsed = if bytes[0] == 0x2D { -1 } else { 1 };
+//     let number: NumberTypeUsed = bytes
+//         .iter()
+//         .rev()
+//         .filter(|&e| e != &0x2E && e != &0x2D)
+//         .enumerate()
+//         .map(|(i, &e)| {
+//             let pos = NumberTypeUsed::from(10).pow(u32::try_from(i).unwrap());
+//             NUMBER_LOOKUP[e as usize] * pos
+//         })
+//         .reduce(|a, b| a + b)
+//         .unwrap();
+//     number * sign
+// }
 
 /// some garbage to quickly convert to &str
 /// seems like its much faster
