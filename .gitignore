@@ -2,3 +2,4 @@
 /src
 measurements.txt
 *.py
+Cargo.lock
