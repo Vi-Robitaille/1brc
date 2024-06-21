@@ -1,4 +1,3 @@
-// pub type NumberTypeUsed = f32;
 pub type NumberTypeUsed = i32;
 
 // Used when number type isnt a float
@@ -25,7 +24,6 @@ pub struct WeatherInfo {
 impl WeatherInfo {
     pub fn new(bytes: &[u8]) -> Self {
         let value: NumberTypeUsed = bytes_to_number_used(bytes);
-        // let value = fast_float::parse::<f32, _>(bytes).unwrap();
         WeatherInfo {
             sum: value,
             min: value,
@@ -38,7 +36,6 @@ impl WeatherInfo {
     fn update(&mut self, bytes: &[u8]) {
         self.count += 1;
         let value = bytes_to_number_used(bytes);
-        // let value = fast_float::parse::<f32, _>(bytes).unwrap();
         self.min = NumberTypeUsed::min(self.min, value);
         self.max = NumberTypeUsed::max(self.max, value);
         self.sum += value;
