@@ -1,4 +1,4 @@
-pub type NumberTypeUsed = i8;
+pub type NumberTypeUsed = i32;
 
 // Used when number type isnt a float
 #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -15,7 +15,7 @@ const NUMBER_LOOKUP: [NumberTypeUsed; 256] = [
 
 #[derive(Debug, Clone)]
 pub struct WeatherInfo {
-    pub sum: usize,
+    pub sum: NumberTypeUsed,
     pub min: NumberTypeUsed,
     pub max: NumberTypeUsed,
     pub count: usize,
@@ -25,7 +25,7 @@ impl WeatherInfo {
     pub fn new(bytes: &[u8]) -> Self {
         let value: NumberTypeUsed = bytes_to_number_used(bytes);
         WeatherInfo {
-            sum: (value as usize),
+            sum: value,
             min: value,
             max: value,
             count: 1,
@@ -38,7 +38,7 @@ impl WeatherInfo {
         let value = bytes_to_number_used(bytes);
         self.min = NumberTypeUsed::min(self.min, value);
         self.max = NumberTypeUsed::max(self.max, value);
-        self.sum += (value as usize);
+        self.sum += value;
     }
 }
 
@@ -46,8 +46,8 @@ impl Default for WeatherInfo {
     fn default() -> Self {
         WeatherInfo {
             sum: 0,
-            min: NumberTypeUsed::MAX,
-            max: NumberTypeUsed::MIN,
+            min: 99999999,
+            max: -99999999,
             count: 0,
         }
     }
