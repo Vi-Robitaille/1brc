@@ -28,6 +28,6 @@ fn criterion_benchmark_1_000_000_000(c: &mut Criterion) {
 criterion_group!(
     benches,
     criterion_benchmark_1_000_000,
-    criterion_benchmark_1_000_000_000
-);
+    // criterion_benchmark_1_000_000_000
+    );
 criterion_main!(benches);

@@ -95,16 +95,17 @@ pub fn make_me_the_good_good(print: bool) {
     }
 
     if print {
+        let max_len = final_map.len();
         for (idx, (key, value)) in final_map.iter().enumerate() {
             if idx == 0 {
                 print!("{{ ");
-            } else {
+            } else if idx < max_len {
                 print!(", ");
             }
             let city = key.as_bstr();
             print!("\"{city}\": {value}");
         }
-        print!("}}");
+        print!("}}\n");
     }
 }
 

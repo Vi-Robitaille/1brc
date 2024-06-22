@@ -1,4 +1,4 @@
-pub type NumberTypeUsed = i32;
+pub type NumberTypeUsed = i8;
 
 // Used when number type isnt a float
 #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -15,7 +15,7 @@ const NUMBER_LOOKUP: [NumberTypeUsed; 256] = [
 
 #[derive(Debug, Clone)]
 pub struct WeatherInfo {
-    pub sum: NumberTypeUsed,
+    pub sum: usize,
     pub min: NumberTypeUsed,
     pub max: NumberTypeUsed,
     pub count: usize,
@@ -25,7 +25,7 @@ impl WeatherInfo {
     pub fn new(bytes: &[u8]) -> Self {
         let value: NumberTypeUsed = bytes_to_number_used(bytes);
         WeatherInfo {
-            sum: value,
+            sum: (value as usize),
             min: value,
             max: value,
             count: 1,
@@ -38,7 +38,7 @@ impl WeatherInfo {
         let value = bytes_to_number_used(bytes);
         self.min = NumberTypeUsed::min(self.min, value);
         self.max = NumberTypeUsed::max(self.max, value);
-        self.sum += value;
+        self.sum += (value as usize);
     }
 }
 
@@ -46,8 +46,8 @@ impl Default for WeatherInfo {
     fn default() -> Self {
         WeatherInfo {
             sum: 0,
-            min: 99999999,
-            max: -99999999,
+            min: NumberTypeUsed::MAX,
+            max: NumberTypeUsed::MIN,
             count: 0,
         }
     }
@@ -66,7 +66,7 @@ impl std::fmt::Display for WeatherInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{{'min': {:.1}, 'mean': {:.1}, 'max': {:.1} }},",
+            "{{\"min\": {:.1}, \"mean\": {:.1}, \"max\": {:.1} }}",
             (self.min as f32) / 10_f32,
             ((self.sum as f32) / 10_f32) / self.count as f32,
             (self.max as f32) / 10_f32
