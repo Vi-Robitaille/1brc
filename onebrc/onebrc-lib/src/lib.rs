@@ -23,14 +23,16 @@ pub fn make_me_the_good_good(print: bool) {
     let available_cores: usize = available_parallelism().unwrap().into();
 
     let mut indexes: Vec<usize> = vec![0];
-    indexes.extend(
-        (1..available_cores)
-            .map(|x| {
-                let idx = x * (MMAP.get().unwrap().len() / available_cores);
-                nearby_search(MMAP.get().unwrap(), (idx - 31)..(idx + 32)).unwrap()
-            })
-            .collect::<Vec<usize>>(),
-    );
+    if available_cores > 1 {
+        indexes.extend(
+            (1..available_cores)
+                .map(|x| {
+                    let idx = x * (MMAP.get().unwrap().len() / available_cores);
+                    nearby_search(MMAP.get().unwrap(), (idx - 31)..(idx + 32)).unwrap()
+                })
+                .collect::<Vec<usize>>(),
+        );
+    }
     indexes.push(MMAP.get().unwrap().len());
     let ranges = indexes
         .windows(2)
